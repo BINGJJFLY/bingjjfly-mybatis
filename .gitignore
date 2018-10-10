@@ -1,5 +1,5 @@
 # Compiled class file and all in target/
-/target/
+/target
 
 # Log file
 *.log
@@ -28,3 +28,4 @@ hs_err_pid*
 *.project
 *.component
 *.MF
+*.properties

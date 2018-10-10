@@ -6,6 +6,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
@@ -83,7 +84,7 @@ public class XmlParser {
 			factory.setExpandEntityReferences(true);
 
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			// 根据Xml文档上的声明寻找DTD定义，以便对文档的进行验证
+			// 根据Xml文档上的声明加载本地DTD文件（避免网络加载的延迟），以便对文档的进行验证
 			builder.setEntityResolver(new XMLMapperEntityResolver());
 			builder.setErrorHandler(new ErrorHandler() {
 				@Override
@@ -107,11 +108,19 @@ public class XmlParser {
 		}
 	}
 
+	/**
+	 * 
+	 * @param item
+	 * @param expression 表达式：'/'代表根目录（/configuration），'//'代表某一个节点（//mappers）
+	 * @return
+	 */
 	public static Node evalNode(Object item, String expression) {
 		try {
 			XPathFactory factory = XPathFactory.newInstance();
 			XPath xPath = factory.newXPath();
-			return (Node) xPath.evaluate(expression, item, XPathConstants.NODE);
+			XPathExpression pathExpression = xPath.compile(expression);
+			return (Node) pathExpression.evaluate(item, XPathConstants.NODE);
+//			return (Node) xPath.evaluate(expression, item, XPathConstants.NODE);
 		} catch (Exception e) {
 			throw new RuntimeException("Error evaluating XPath.  Cause: " + e, e);
 		}
