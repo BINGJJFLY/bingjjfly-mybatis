@@ -1,5 +1,7 @@
 package com.wjz.mybatis.reflection.bridge;
 
+import java.util.List;
+
 /**
  * <b>接口为泛型类型接口</b>
  * <p>
@@ -19,4 +21,6 @@ public interface Parent<T> {
 	 * @return
 	 */
 	T bridgeMethod(T t);
+	
+	List<String> getMethod();
 }
