@@ -3,20 +3,33 @@ package com.wjz.mybatis.binding;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sql.DataSource;
 
 public class PersistentProxy<D> implements InvocationHandler {
 	
+	private DataSource dataSource;
 	private Class<D> daoInterface;
-	
-	private final Map<Method, PersistentMethod> methodCache = new ConcurrentHashMap<>();
+	private Map<Method, PersistentMethod> methodCache;
 
-	public PersistentProxy(Class<D> daoInterface) {
+	public PersistentProxy(DataSource dataSource, Class<D> daoInterface, Map<Method, PersistentMethod> methodCache) {
+		this.dataSource = dataSource;
 		this.daoInterface = daoInterface;
+		this.methodCache = methodCache;
 	}
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		return null;
+		// ==> 将<Method, PersistentMethod>放入到缓存中
+		PersistentMethod persistentMethod = cachedMethod(method);
+		return persistentMethod.execute(dataSource, args);
+	}
+
+	private PersistentMethod cachedMethod(Method method) {
+		PersistentMethod persistentMethod = methodCache.get(method);
+		if (persistentMethod == null) {
+			persistentMethod = new PersistentMethod(daoInterface, method);
+		}
+		return persistentMethod;
 	}
 }
