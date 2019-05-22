@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 
 public class PersistentProxy<D> implements InvocationHandler {
 	
+	// 代理目标接口，真正逻辑处理类
 	private DataSource dataSource;
 	private Class<D> daoInterface;
 	private Map<Method, PersistentMethod> methodCache;

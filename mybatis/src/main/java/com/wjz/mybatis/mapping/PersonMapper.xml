@@ -5,7 +5,26 @@
 
 <mapper namespace="com.wjz.mybatis.mapper.PersonMapper">
 
-	<select id="selectById" resultType="com.wjz.mybatis.pojo.Person">
+	<resultMap type="com.wjz.mybatis.pojo.Person" id="personResultMap">
+		<constructor>
+			<idArg/>
+			<arg/>
+			<arg/>
+		</constructor>
+		<id/>
+		<result/>
+		<association property=""></association>
+	</resultMap>
+
+	<!-- 二级缓存 -->
+	<!-- 默认使用org.apache.ibatis.cache.impl.PerpetualCache -->
+	<cache type="PERPETUAL" eviction="LRU" flushInterval="" >
+		<property name="" value=""/>
+	</cache>
+	
+	<cache-ref namespace="" />
+
+	<select id="selectById" resultType="com.wjz.mybatis.pojo.Person" >
 		select * from person where id = #{id }
 	</select>
 </mapper>
